@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import prisma from "@/lib/prisma";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { lucia } from "@/auth";
+import { cookies } from "next/headers";
 
 export async function signUp(
   credentials: SignUpValues,
@@ -55,8 +58,17 @@ export async function signUp(
       },
     });
 
-    redirect("/");
+    const session = await lucia.createSession(userId, {});
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
+
+    return redirect("/");
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.log(error);
     return { error: "An error occurred while signing up" };
   }

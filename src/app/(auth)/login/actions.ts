@@ -1,3 +1,4 @@
+'use server'
 import { loginSchema, LoginValues } from "@/lib/validation";
 import { redirect } from "next/navigation";
 import { verify } from "@node-rs/argon2";

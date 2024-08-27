@@ -1,3 +1,4 @@
+'use server'
 import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { redirect } from "next/navigation";
 import { hash } from "@node-rs/argon2";
